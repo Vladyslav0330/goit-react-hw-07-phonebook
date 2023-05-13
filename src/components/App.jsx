@@ -1,12 +1,22 @@
 import Section from './Section';
-import FormComponent from './ContactForm';
+import FormComponent from './ContactForm/Form';
 import ContactList from './ContactList';
 import Filter from './Filter';
-import { useSelector } from 'react-redux';
-import { getContacts } from '../redux/contactsSlice';
+import Loader from './Loader';
+import { useSelector, useDispatch } from 'react-redux';
+import { getContacts, getIsLoading, getError } from '../redux/contactsSlice';
+import { fetchContacts } from '../redux/operations';
+import { useEffect } from 'react';
 
 const App = () => {
   const stateContacts = useSelector(getContacts);
+  const stateIsLoading = useSelector(getIsLoading);
+  const stateError = useSelector(getError);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   return (
     <div
@@ -28,6 +38,8 @@ const App = () => {
       <Section title="Add a contact">
         <FormComponent />
       </Section>
+      {stateIsLoading && !stateError && <Loader />}
+      {stateError && <p>Something went wrong. {stateError}</p>}
       {stateContacts.length > 0 && (
         <Section title="Contacts">
           <Filter />

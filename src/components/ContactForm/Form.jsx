@@ -1,7 +1,5 @@
-
 import { Formik, ErrorMessage } from 'formik';
 import * as yup from 'yup';
-import { nanoid } from 'nanoid';
 import {
   FormElement,
   Label,
@@ -10,13 +8,13 @@ import {
   LabelName,
 } from './Form.styled';
 import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from '../../redux/contactsSlice';
+import { addContact } from '../../redux/operations';
 import { getContacts } from '../../redux/contactsSlice';
 
-const initialValues = { name: '', number: '' };
+const initialValues = { name: '', phone: '' };
 const schema = yup.object({
   name: yup.string().required(),
-  number: yup.string().required(),
+  phone: yup.string().required(),
 });
 
 const FormComponent = () => {
@@ -30,7 +28,7 @@ const FormComponent = () => {
     if (isNameTaken) {
       return alert(`${isNameTaken.name} is already in contacts`);
     }
-    dispatch(addContact({ ...values, id: nanoid() }));
+    dispatch(addContact(values));
     resetForm();
   };
 
@@ -56,7 +54,7 @@ const FormComponent = () => {
           <LabelName>Number</LabelName>
           <InputField
             type="tel"
-            name="number"
+            name="phone"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
